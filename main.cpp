@@ -64,41 +64,9 @@ void test_0(int n = 10) {
         cout << list_0->pop() << endl;
         list_0->print();
     }
-    get_COUNT_DELETE();
-    /*
-     START!
-    push_back method
-    Cap : 12
-    Size: 10
-    Data: 0 1 2 3 4 5 6 7 8 9
 
-    operator []
-    0 1 2 3 4 5 6 7 8 9
-    Remove method
-    9
-    0 1 2 3 4 5 6 7 8
-    8
-    0 1 2 3 4 5 6 7
-    7
-    0 1 2 3 4 5 6
-    6
-    0 1 2 3 4 5
-    5
-    0 1 2 3 4
-    4
-    0 1 2 3
-    3
-    0 1 2
-    2
-    0 1
-    1
-    0
-    0
-    print(): Empty
-    0
-    print(): Empty
-    END!
-     */
+    delete list_0;
+    get_COUNT_DELETE();
 }
 
 void test_1(int n = 50) {
@@ -126,35 +94,11 @@ void test_1(int n = 50) {
         list_2->insert(i + 1, 2*i);
     }
     list_2->info();
+
+    delete list_0;
+    delete list_1;
+    delete list_2;
     get_COUNT_DELETE();
-    /*
-    push_front method
-    Resizing from [12]->[24]
-    Resizing from [24]->[48]
-    Resizing from [48]->[96]
-    Cap : 96
-    Size: 50
-    Data: 49 48 47 46 45 44 43 42 41 40 39 38 37 36 35 34 33 32 31 30 29 28 27 26 25 24 23 22 21 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0
-
-    insert method
-    Resizing from [12]->[24]
-    Resizing from [24]->[48]
-    Resizing from [48]->[96]
-    Cap : 96
-    Size: 50
-    Data: 0 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 42 44 46 48 50 52 54 56 58 60 62 64 66 68 70 72 74 76 78 80 82 84 86 88 90 92 94 96 98
-
-    insert method
-    Resizing from [12]->[24]
-    Resizing from [24]->[48]
-    Cap : 48
-    Size: 25
-    Data: 0 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 42 44 46 48
-
-    Cap : 48
-    Size: 25
-    Data: 0 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 42 44 46 48
-     */
 }
 
 void test_2(int n = 30) {
@@ -176,35 +120,34 @@ void test_2(int n = 30) {
     } catch (std::out_of_range& e) {
         cout << RED << e.what() << RESET << endl;
     }
-    get_COUNT_DELETE();
-    /*
-    push_front method
-    Resizing from [12]->[24]
-    Resizing from [24]->[48]
-    Cap : 48
-    Size: 30
-    Data: 29 28 27 26 25 24 23 22 21 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0
 
-    operator []
-    -99 0
-    Accessing out of range
-    get(): Out of range
-     */
+    delete list_0;
+    get_COUNT_DELETE();
 }
 
-void test_3(int n = 99) {
+void test_3(int n = 20) {
+    auto* list_0 = new ArrayList<int>();
+    cout << CYAN << "insert method" << RESET << endl;
+    for (int i = 0; i < n; ++i) {
+        list_0->insert(i, i * 3);
+    }
+    list_0->info();
 
+    list_0->reverse();
+    list_0->info();
+
+    delete list_0;
     get_COUNT_DELETE();
 }
 
 int main() {
     cout << GREEN << "START!" << RESET << endl;
 
-    test_constructor();
+//    test_constructor();
 //    test_0();
 //    test_1();
 //    test_2();
-//    test_3();
+    test_3();
 
     cout << "COUNT_DELETE_FINAL: " << YELLOW_BACKGROUND << COUNT_DELETE << RESET << endl;
     cout << GREEN << "END!" << RESET << endl;

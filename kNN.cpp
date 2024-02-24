@@ -1,7 +1,7 @@
 #include "kNN.hpp"
 
 /*
- * TODO:
+ *
  */
 
 template<typename T>
@@ -35,7 +35,7 @@ T& ArrayList<T>::pop() {
 }
 
 /*
- * TODO:
+ *
  */
 
 template<typename T>
