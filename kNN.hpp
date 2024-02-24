@@ -72,6 +72,7 @@ public:
     void push_front(T value) override;
     void insert(int index, T value) override;
     void remove(int index) override;
+    T& pop();
 
     T& get(int index) const override;
     T& operator[](int index);
@@ -81,6 +82,7 @@ public:
     void reverse() override;
 
     void print() const override;
+    void info() const;
 };
 
 void test();

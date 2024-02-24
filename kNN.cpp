@@ -1,7 +1,18 @@
 #include "kNN.hpp"
 
-/* TODO: You can implement methods, functions that support your data structures here.
- * */
+/*
+ * TODO: Please design your data structure carefully so that you can work with the given dataset
+ */
+
+template<typename T>
+void ArrayList<T>::info() const {
+    std::cout << YELLOW << "Cap : " << capacity << RESET << std::endl;
+    std::cout << YELLOW << "Size: " << size     << RESET << std::endl;
+    std::cout << YELLOW << "Data: ";
+    print();
+    std::cout << RESET << std::endl;
+}
+
 
 template<typename T>
 void ArrayList<T>::resize() {
@@ -15,6 +26,17 @@ void ArrayList<T>::resize() {
     data = new_data;
     capacity = new_capacity;
 }
+
+template<typename T>
+T& ArrayList<T>::pop() {
+    T value = data[size - 1];
+    remove(size - 1);
+    return value;
+}
+
+/*
+ * TODO: Please design your data structure carefully so that you can work with the given dataset
+ */
 
 template<typename T>
 ArrayList<T>::ArrayList() : data(new T[12]), capacity(12), size(0) {
@@ -127,6 +149,11 @@ void ArrayList<T>::reverse() {
 
 template<typename T>
 void ArrayList<T>::print() const {
+    if (size == 0) {
+        cout << RED << "Empty" << RESET << endl;
+        return;
+    }
+
     cout << data[0];
     for (int i = 1; i < size; i++) {
         cout << " " << data[i];

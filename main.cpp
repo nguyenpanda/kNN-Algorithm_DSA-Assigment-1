@@ -25,30 +25,49 @@ int COUNT_DELETE;
 //    cout << "Accuracy: " << accuracy << endl;
 //}
 
+void test_0() {
+    auto* list_0 = new ArrayList<int>();
+
+    int n = 10;
+
+    cout << CYAN << "push_back method" << RESET << endl;
+    for (int i = 0; i < n; ++i) {
+        list_0->push_back(i);
+    }
+    list_0->print();
+
+    cout << CYAN << "operator []" << RESET << endl;
+    for (int i = 0; i < n; ++i) {
+        cout << (*list_0)[i] << " ";
+    }
+    cout << endl;
+
+    cout << CYAN << "Remove method" << RESET << endl;
+    for (int i = 0; i < n + 1; ++i) {
+        cout << list_0->pop() << endl;
+        list_0->print();
+    }
+}
+
+void test_1() {
+    auto* list_0 = new ArrayList<int>();
+
+    int n = 10;
+
+    list_0->push_back(1);
+    list_0->info();
+
+    list_0->remove(0);
+    list_0->info();
+}
+
+
 int main() {
 //    tc1();
     cout << GREEN << "START!" << RESET << endl;
 
-    {
-        auto* list_0 = new ArrayList<int>();
-
-        for (int i = 0; i < 30; ++i) {
-            list_0->push_back(i);
-        }
-        list_0->print();
-
-        cout << CYAN << "Get method" << RESET << endl;
-        for (int i = 0; i < 30; ++i) {
-            cout << list_0->get(i) << " ";
-        }
-        cout << endl;
-
-        cout << CYAN << "operator []" << RESET << endl;
-        for (int i = 0; i < 30; ++i) {
-            cout << (*list_0)[i] << " ";
-        }
-        cout << endl;
-    }
+    test_0();
+//    test_1();
 
 //    {
 //        auto* list_0 = new ArrayList<ArrayList<int>*>();
@@ -68,7 +87,6 @@ int main() {
 //    }
 
 //    cout << COUNT_DELETE << endl;
-
 
     cout << GREEN << "END!" << RESET << endl;
     return 0;
