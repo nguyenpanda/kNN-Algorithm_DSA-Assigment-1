@@ -68,15 +68,17 @@ public:
     ArrayList& operator=(ArrayList const& other);
     ~ArrayList() override;
 
-    void push_back(T value) override;
-    void push_front(T value) override;
-    void insert(int index, T value) override;
+    int length() const override;
+
     void remove(int index) override;
     T& pop();
 
+    void push_back(T value) override;
+    void push_front(T value) override;
+    void insert(int index, T value) override;
+
     T& get(int index) const override;
     T& operator[](int index);
-    int length() const override;
 
     void clear() override;
     void reverse() override;
