@@ -1,7 +1,7 @@
 #include "kNN.hpp"
 
 /*
- * TODO: Please design your data structure carefully so that you can work with the given dataset
+ * TODO:
  */
 
 template<typename T>
@@ -13,16 +13,16 @@ void ArrayList<T>::info() const {
     std::cout << RESET << std::endl;
 }
 
-
 template<typename T>
 void ArrayList<T>::resize() {
     cout << MAGENTA << "Resizing" << RESET <<  " from [" << YELLOW << capacity << RESET << "]->[" << YELLOW << capacity*2 << RESET << "]" << endl;
     int new_capacity = capacity * 2;
     T* new_data = new T[new_capacity];
-    memcpy(new_data, data, sizeof(T) * size);
+    ++COUNT_DELETE;
+    memcpy(new_data, data, sizeof(T) * size); // NOLINT(*-sizeof-expression)
 
     delete[] data;
-//    ++COUNT_DELETE;
+    --COUNT_DELETE;
     data = new_data;
     capacity = new_capacity;
 }
@@ -35,49 +35,50 @@ T& ArrayList<T>::pop() {
 }
 
 /*
- * TODO: Please design your data structure carefully so that you can work with the given dataset
+ * TODO:
  */
 
 template<typename T>
 ArrayList<T>::ArrayList() : data(new T[12]), capacity(12), size(0) {
-//    ++COUNT_DELETE;
+    cout << MAGENTA << "Constructor()" << RESET << endl;
+    ++COUNT_DELETE;
 }
 
 template<typename T>
 ArrayList<T>::ArrayList(int capacity) : data(new T[capacity]), capacity(capacity), size(0) {
-//    ++COUNT_DELETE;
+    cout << MAGENTA << "Constructor(int capacity)" << RESET << endl;
+    ++COUNT_DELETE;
 }
 
 template<typename T>
 ArrayList<T>::ArrayList(ArrayList& other) : data(new T[other.capacity]), capacity(other.capacity), size(other.size) {
-    cout << "Copy constructor" << endl;
-//    ++COUNT_DELETE;
-    memcpy(&data, &other.data, sizeof(T) * other.size);
+    cout << MAGENTA << "Copy constructor" << RESET << endl;
+    ++COUNT_DELETE;
+    memcpy(&data, &other.data, sizeof(T) * other.size);  // NOLINT(*-sizeof-expression)
 }
 
 template<typename T>
 ArrayList<T>& ArrayList<T>::operator=(ArrayList<T> const& other) {
-    cout << "= operator" << endl;
+    cout << MAGENTA << "= operator" << RESET << endl;
     if (this != &other) {
         delete[] data;
-//        --COUNT_DELETE;
+        --COUNT_DELETE;
 
         capacity = other.capacity;
         size = other.size;
         data = new T[other.capacity];
-//        ++COUNT_DELETE;
+        ++COUNT_DELETE;
 
-        memcpy(&data, &other.data, sizeof(T) * other.size);
+        memcpy(&data, &other.data, sizeof(T) * other.size); // NOLINT(*-sizeof-expression)
     }
     return *this;
 }
 
 template<typename T>
 ArrayList<T>::~ArrayList() {
-    cout << "Destructor" << endl;
+    cout << MAGENTA << "Destructor" << RESET << endl;
     delete[] data;
-//    --COUNT_DELETE;
-//    --COUNT_DELETE;
+    --COUNT_DELETE;
 }
 
 template<typename T>
@@ -96,7 +97,7 @@ void ArrayList<T>::insert(int index, T value) {
     if (index < 0 || index > size) { return; }
     if (size == capacity) { resize(); }
 
-    memmove(data + index + 1, data + index, sizeof(T) * (size - index));
+    memmove(data + index + 1, data + index, sizeof(T) * (size - index)); // NOLINT(*-sizeof-expression)
     data[index] = value;
     size++;
 }
@@ -105,7 +106,7 @@ template<typename T>
 void ArrayList<T>::remove(int index) {
     if (index < 0 || index >= size) { return; }
 
-    memmove(data + index, data + index + 1, sizeof(T) * (size - index - 1));
+    memmove(data + index, data + index + 1, sizeof(T) * (size - index - 1)); // NOLINT(*-sizeof-expression)
     size--;
 }
 
@@ -131,7 +132,7 @@ int ArrayList<T>::length() const {
 template<typename T>
 void ArrayList<T>::clear() {
     delete[] data;
-//    --COUNT_DELETE;
+    --COUNT_DELETE;
     data = new T[capacity];
     ++COUNT_DELETE;
     capacity = 12;
@@ -150,7 +151,7 @@ void ArrayList<T>::reverse() {
 template<typename T>
 void ArrayList<T>::print() const {
     if (size == 0) {
-        cout << RED << "Empty" << RESET << endl;
+        cout << MAGENTA << "print(): Empty" << RESET << endl;
         return;
     }
 
@@ -160,9 +161,6 @@ void ArrayList<T>::print() const {
     }
     cout << endl;
 }
-
-
-
 
 
 template
