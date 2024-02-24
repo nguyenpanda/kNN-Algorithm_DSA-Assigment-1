@@ -7,7 +7,7 @@ int COUNT_DELETE;
 //    tc1();
 //void tc1(){
 //    Dataset dataset;
-//    dataset.loadFromCSV("mnist.csv");
+//    dataset.loadFromCSV("init_dataset_199.csv");
 //    dataset.printHead();
 //    dataset.printTail();
 //    int nRows, nCols;
