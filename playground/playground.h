@@ -1,5 +1,9 @@
-#ifndef DSA232_A1_MAIN_H
-#define DSA232_A1_MAIN_H
+//
+// Created by Hà Tường Nguyên on 2/25/24.
+//
+
+#ifndef DSA_ASSIGNMENT_PLAYGROUND_H
+#define DSA_ASSIGNMENT_PLAYGROUND_H
 
 #include <iostream>
 #include <cstdio>
@@ -14,7 +18,7 @@
 
 using namespace std;
 
-#include "color.h"
+#include "../color.h"
 using namespace color;
-extern int COUNT_DELETE;
-#endif //DSA232_A1_MAIN_H
+
+#endif //DSA_ASSIGNMENT_PLAYGROUND_H
