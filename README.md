@@ -16,6 +16,8 @@
 `push_back()`, `push_back()`, `insert()`
 ### <span style="color:skyblue">Access - test_0( ) - test_2( ):</span>
 `operator[]`, `get()`
+### <span style="color:skyblue">Clear/Reverse - test_3( ):</span>
+`Clear()`, `Reverse()`
 
 
 
