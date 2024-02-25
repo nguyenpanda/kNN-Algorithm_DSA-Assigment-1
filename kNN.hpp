@@ -55,7 +55,7 @@ public:
 
 template<typename T>
 class ArrayList : public List<T> {
-private:
+protected:
     T* data;
     int capacity;
     int size;
@@ -64,21 +64,37 @@ public:
     void resize();
     ArrayList();
     explicit ArrayList(int capacity);
-    ArrayList(ArrayList& other);
+    ArrayList(ArrayList const& other);
     ArrayList& operator=(ArrayList const& other);
     ~ArrayList() override;
 
     int length() const override;
 
     void remove(int index) override;
-    T& pop();
+    T pop();
 
     void push_back(T value) override;
     void push_front(T value) override;
     void insert(int index, T value) override;
 
     T& get(int index) const override;
-    T& operator[](int index);
+    virtual T& operator[](int index) const;
+
+    T* begin() {
+        return data;
+    }
+
+    T* end() {
+        return data + size;
+    }
+
+    const T* begin() const {
+        return data;
+    }
+
+    const T* end() const {
+        return data + size;
+    }
 
     void clear() override;
     void reverse() override;
@@ -87,4 +103,32 @@ public:
     void info() const;
 };
 
-void test();
+class Image : public ArrayList<int> {
+private:
+    int label;
+
+public:
+    Image();
+    Image(Image const& other);
+    Image& operator=(Image const& other);
+
+    [[maybe_unused]] int getLabel() const;
+    [[maybe_unused]] void setLabel(int label);
+
+    [[maybe_unused]] void load(const int* pixels, int n = 28 * 28 + 1);
+
+    int& operator[](int index) const final {
+        return ArrayList<int>::operator[](index);
+    }
+
+    void print() const final;
+
+    friend double distance(const Image& a, const Image& b) {
+        int sum = 0;
+        for (int i = 0; i < a.size; ++i) {
+            int temp = a[i] - b[i];
+            sum += temp * temp;
+        }
+        return sqrt((double) sum);
+    }
+};

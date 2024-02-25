@@ -1,42 +1,18 @@
 #include "kNN.hpp"
 
-/*
- *
- */
-
-template<typename T>
-void ArrayList<T>::info() const {
-    std::cout << YELLOW << "Cap : " << capacity << RESET << std::endl;
-    std::cout << YELLOW << "Size: " << size     << RESET << std::endl;
-    std::cout << YELLOW << "Data: ";
-    print();
-    std::cout << RESET << std::endl;
-}
-
 template<typename T>
 void ArrayList<T>::resize() {
     cout << MAGENTA << "Resizing" << RESET <<  " from [" << YELLOW << capacity << RESET << "]->[" << YELLOW << capacity*2 << RESET << "]" << endl;
     int new_capacity = capacity * 2;
     T* new_data = new T[new_capacity];
     ++COUNT_DELETE;
-    memcpy(new_data, data, sizeof(T) * size); // NOLINT(*-sizeof-expression)
+    memcpy(new_data, data, sizeof(T&) * size);
 
     delete[] data;
     --COUNT_DELETE;
     data = new_data;
     capacity = new_capacity;
 }
-
-template<typename T>
-T& ArrayList<T>::pop() {
-    T value = data[size - 1];
-    remove(size - 1);
-    return value;
-}
-
-/*
- *
- */
 
 template<typename T>
 ArrayList<T>::ArrayList() : data(new T[12]), capacity(12), size(0) {
@@ -51,10 +27,10 @@ ArrayList<T>::ArrayList(int capacity) : data(new T[capacity]), capacity(capacity
 }
 
 template<typename T>
-ArrayList<T>::ArrayList(ArrayList& other) : data(new T[other.capacity]), capacity(other.capacity), size(other.size) {
+ArrayList<T>::ArrayList(ArrayList const& other) : data(new T[other.capacity]), capacity(other.capacity), size(other.size) {
     cout << MAGENTA << "Copy constructor" << RESET << endl;
     ++COUNT_DELETE;
-    memcpy(&data, &other.data, sizeof(T) * other.size);  // NOLINT(*-sizeof-expression)
+    memcpy(&data, &other.data, sizeof(T&) * other.size);
 }
 
 template<typename T>
@@ -69,7 +45,7 @@ ArrayList<T>& ArrayList<T>::operator=(ArrayList<T> const& other) {
         data = new T[other.capacity];
         ++COUNT_DELETE;
 
-        memcpy(&data, &other.data, sizeof(T) * other.size); // NOLINT(*-sizeof-expression)
+        memcpy(&data, &other.data, sizeof(T&) * other.size);
     }
     return *this;
 }
@@ -97,7 +73,7 @@ void ArrayList<T>::insert(int index, T value) {
     if (index < 0 || index > size) { return; }
     if (size == capacity) { resize(); }
 
-    memmove(data + index + 1, data + index, sizeof(T) * (size - index)); // NOLINT(*-sizeof-expression)
+    memmove(data + index + 1, data + index, sizeof(T&) * (size - index));
     data[index] = value;
     size++;
 }
@@ -106,8 +82,15 @@ template<typename T>
 void ArrayList<T>::remove(int index) {
     if (index < 0 || index >= size) { return; }
 
-    memmove(data + index, data + index + 1, sizeof(T) * (size - index - 1)); // NOLINT(*-sizeof-expression)
+    memmove(data + index, data + index + 1, sizeof(T&) * (size - index - 1));
     size--;
+}
+
+template<typename T>
+T ArrayList<T>::pop() {
+    T value = data[size - 1];
+    remove(size - 1);
+    return value;
 }
 
 template<typename T>
@@ -120,9 +103,10 @@ T& ArrayList<T>::get(int index) const {
 }
 
 template<typename T>
-T& ArrayList<T>::operator[](int index) {
+T& ArrayList<T>::operator[](const int index) const {
     return get(index);
 }
+
 
 template<typename T>
 int ArrayList<T>::length() const {
@@ -161,6 +145,74 @@ void ArrayList<T>::print() const {
     }
     cout << endl;
 }
+
+template<typename T>
+void ArrayList<T>::info() const {
+    std::cout << YELLOW << "Cap : " << capacity << RESET << std::endl;
+    std::cout << YELLOW << "Size: " << size     << RESET << std::endl;
+    std::cout << YELLOW << "Data: ";
+    print();
+    std::cout << RESET << std::endl;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Image::Image() : ArrayList::ArrayList<int>(28 * 28 + 1), label(-1) {};
+
+Image::Image(Image const& other) : ArrayList::ArrayList<int>(other), label(other.label) {};
+
+Image& Image::operator=(Image const& other) {
+    if (this != &other) {
+        ArrayList<int>::operator=(other);
+        label = other.label;
+    }
+    return *this;
+}
+
+[[maybe_unused]] int Image::getLabel() const {
+    return label;
+}
+
+void Image::setLabel(int _label) {
+    if (_label < 0 || _label > 9) {
+        throw invalid_argument("setLabel(): Invalid label, got " + to_string(_label));
+    }
+    this->label = _label;
+}
+
+void Image::load(const int* pixels, int n) {
+    setLabel(pixels[0]);
+    for (int i = 1; i < n; ++i) {
+        ArrayList<int>::push_front(pixels[i]);
+    }
+}
+
+char get_char(int pixel) {
+    switch (pixel) {
+        case 0: return ' ';  // [000, 026)
+        case 1: return '.';  // [026, 052)
+        case 2: return ':';  // [052, 078)
+        case 3: return '-';  // [078, 104)
+        case 4: return '=';  // [104, 130)
+        case 5: return '+';  // [130, 156)
+        case 6: return '*';  // [156, 182)
+        case 7: return '#';  // [182, 208)
+        case 8: return '%';  // [208, 234)
+        case 9: return '@';  // [234, 255)
+        default: return '?';
+    }
+}
+
+void Image::print() const {
+    cout << YELLOW << "Label: " << label << RESET << endl;
+    for (int i = 0; i < size; ++i) {
+        cout << get_char(get(i));
+        if ((i + 1) % 28 == 0) { cout << endl; }
+    }
+}
+
+
+
+
 
 
 template
