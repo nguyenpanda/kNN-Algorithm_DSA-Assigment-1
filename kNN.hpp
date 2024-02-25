@@ -103,6 +103,8 @@ public:
     void info() const;
 };
 
+
+
 class Image : public ArrayList<int> {
 private:
     int label;
@@ -115,11 +117,9 @@ public:
     [[maybe_unused]] int getLabel() const;
     [[maybe_unused]] void setLabel(int label);
 
-    [[maybe_unused]] void load(const int* pixels, int n = 28 * 28 + 1);
+    [[maybe_unused]] void load(const int* pixels, int n = 28 * 28);
 
-    int& operator[](int index) const final {
-        return ArrayList<int>::operator[](index);
-    }
+    int& operator[](int index) const final;
 
     void print() const final;
 

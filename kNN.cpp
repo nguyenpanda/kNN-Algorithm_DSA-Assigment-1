@@ -156,7 +156,7 @@ void ArrayList<T>::info() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Image::Image() : ArrayList::ArrayList<int>(28 * 28 + 1), label(-1) {};
+Image::Image() : ArrayList::ArrayList<int>(28 * 28), label(-1) {};
 
 Image::Image(Image const& other) : ArrayList::ArrayList<int>(other), label(other.label) {};
 
@@ -182,32 +182,34 @@ void Image::setLabel(int _label) {
 void Image::load(const int* pixels, int n) {
     setLabel(pixels[0]);
     for (int i = 1; i < n; ++i) {
-        ArrayList<int>::push_front(pixels[i]);
+        ArrayList<int>::push_back(pixels[i]);
     }
 }
 
-char get_char(int pixel) {
-    switch (pixel) {
-        case 0: return ' ';  // [000, 026)
-        case 1: return '.';  // [026, 052)
-        case 2: return ':';  // [052, 078)
-        case 3: return '-';  // [078, 104)
-        case 4: return '=';  // [104, 130)
-        case 5: return '+';  // [130, 156)
-        case 6: return '*';  // [156, 182)
-        case 7: return '#';  // [182, 208)
-        case 8: return '%';  // [208, 234)
-        case 9: return '@';  // [234, 255)
-        default: return '?';
-    }
+int&  Image::operator[](int index) const {
+    return ArrayList<int>::operator[](index);
+}
+
+char get_char(int pixel, bool grey = true) {
+    if (grey) { pixel = 255 - pixel; }
+    const std::string chars = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'.";
+
+    // Map the pixel intensity to a character index
+    int charIndex = pixel * chars.size() / 256;
+
+    // Make sure the index is within the range of the characters
+    charIndex = std::min(std::max(charIndex, 0), static_cast<int>(chars.size()) - 1);
+
+    return chars[charIndex];
 }
 
 void Image::print() const {
     cout << YELLOW << "Label: " << label << RESET << endl;
     for (int i = 0; i < size; ++i) {
-        cout << get_char(get(i));
+        cout << get_char(get(i)) << " ";
         if ((i + 1) % 28 == 0) { cout << endl; }
     }
+    cout << endl;
 }
 
 
