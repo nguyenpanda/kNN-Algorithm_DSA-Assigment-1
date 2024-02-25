@@ -4,6 +4,7 @@ template<typename T>
 void ArrayList<T>::resize() {
     cout << MAGENTA << "Resizing" << RESET <<  " from [" << YELLOW << capacity << RESET << "]->[" << YELLOW << capacity*2 << RESET << "]" << endl;
     int new_capacity = capacity * 2;
+
     T* new_data = new T[new_capacity];
     ++COUNT_DELETE;
     memcpy(new_data, data, sizeof(T&) * size);
@@ -39,12 +40,11 @@ ArrayList<T>& ArrayList<T>::operator=(ArrayList<T> const& other) {
     if (this != &other) {
         delete[] data;
         --COUNT_DELETE;
-
-        capacity = other.capacity;
-        size = other.size;
         data = new T[other.capacity];
         ++COUNT_DELETE;
 
+        capacity = other.capacity;
+        size = other.size;
         memcpy(&data, &other.data, sizeof(T&) * other.size);
     }
     return *this;
@@ -156,13 +156,18 @@ void ArrayList<T>::info() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Image::Image() : ArrayList::ArrayList<int>(28 * 28), label(-1) {};
+Image::Image() : ArrayList::ArrayList<int>(28 * 28 - 1), label(-1) {};
 
 Image::Image(Image const& other) : ArrayList::ArrayList<int>(other), label(other.label) {};
 
 Image& Image::operator=(Image const& other) {
     if (this != &other) {
         ArrayList<int>::operator=(other);
+        cout << data << endl;
+        cout << capacity << endl;
+        cout << size << endl;
+        cout << label << endl;
+
         label = other.label;
     }
     return *this;
@@ -179,9 +184,9 @@ void Image::setLabel(int _label) {
     this->label = _label;
 }
 
-void Image::load(const int* pixels, int n) {
+void Image::load(const int* pixels, int number_of_pixels) {
     setLabel(pixels[0]);
-    for (int i = 1; i < n; ++i) {
+    for (int i = 1; i < number_of_pixels + 1; ++i) {
         ArrayList<int>::push_back(pixels[i]);
     }
 }
@@ -192,13 +197,12 @@ int&  Image::operator[](int index) const {
 
 char get_char(int pixel, bool grey = true) {
     if (grey) { pixel = 255 - pixel; }
-    const std::string chars = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'.";
 
-    // Map the pixel intensity to a character index
-    int charIndex = pixel * chars.size() / 256;
+    const string chars = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'.";
 
-    // Make sure the index is within the range of the characters
-    charIndex = std::min(std::max(charIndex, 0), static_cast<int>(chars.size()) - 1);
+    int charIndex = pixel * (int) chars.size() / 256;
+
+    charIndex = min(charIndex, (int) chars.size() - 1);
 
     return chars[charIndex];
 }

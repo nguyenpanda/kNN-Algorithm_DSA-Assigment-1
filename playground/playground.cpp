@@ -33,9 +33,7 @@ public:
 
 };
 
-int main() {
-    cout << GREEN << "START" << RESET << endl;
-
+void testList() {
     int data[] = {1, 2, 3, 4, 5};
 
     List<int> list_0(data, 5);
@@ -49,6 +47,16 @@ int main() {
     for (int& i : list_0) {
         cout << i << " ";
     }
+}
+
+int main() {
+    cout << GREEN << "START" << RESET << endl;
+
+    bool a = false;
+    int b = a ? 1 : 0;
+
+    cout << b << endl;
+
 
     cout << GREEN << "END" << RESET << endl;
     return 0;
