@@ -16,27 +16,27 @@ void ArrayList<T>::resize() {
 }
 
 template<typename T>
-ArrayList<T>::ArrayList() : data(new T[12]), capacity(12), size(0) {
-    cout << MAGENTA << "Constructor()" << RESET << endl;
+ArrayList<T>::ArrayList() : data(new T[13]), capacity(13), size(0) {
+    cout << MAGENTA << "ArrayList Constructor()" << RESET << endl;
     ++COUNT_DELETE;
 }
 
 template<typename T>
 ArrayList<T>::ArrayList(int capacity) : data(new T[capacity]), capacity(capacity), size(0) {
-    cout << MAGENTA << "Constructor(int capacity)" << RESET << endl;
+    cout << MAGENTA << "ArrayList Constructor(int capacity)" << RESET << endl;
     ++COUNT_DELETE;
 }
 
 template<typename T>
-ArrayList<T>::ArrayList(ArrayList const& other) : data(new T[other.capacity]), capacity(other.capacity), size(other.size) {
-    cout << MAGENTA << "Copy constructor" << RESET << endl;
+ArrayList<T>::ArrayList(const ArrayList& other) : data(new T[other.capacity]), capacity(other.capacity), size(other.size) {
+    cout << MAGENTA << "ArrayList Copy constructor" << RESET << endl;
     ++COUNT_DELETE;
-    memcpy(&data, &other.data, sizeof(T&) * other.size);
+    memcpy(data, other.data, sizeof(T&) * other.size);
 }
 
 template<typename T>
-ArrayList<T>& ArrayList<T>::operator=(ArrayList<T> const& other) {
-    cout << MAGENTA << "= operator" << RESET << endl;
+ArrayList<T>& ArrayList<T>::operator=(const ArrayList<T>& other) {
+    cout << MAGENTA << "ArrayList = operator" << RESET << endl;
     if (this != &other) {
         delete[] data;
         --COUNT_DELETE;
@@ -45,14 +45,14 @@ ArrayList<T>& ArrayList<T>::operator=(ArrayList<T> const& other) {
 
         capacity = other.capacity;
         size = other.size;
-        memcpy(&data, &other.data, sizeof(T&) * other.size);
+        memcpy(data, other.data, sizeof(T&) * other.size);
     }
     return *this;
 }
 
 template<typename T>
 ArrayList<T>::~ArrayList() {
-    cout << MAGENTA << "Destructor" << RESET << endl;
+    cout << MAGENTA << "ArrayList Destructor" << RESET << endl;
     delete[] data;
     --COUNT_DELETE;
 }
@@ -96,7 +96,7 @@ T ArrayList<T>::pop() {
 template<typename T>
 T& ArrayList<T>::get(int index) const {
     if (index < 0 || index >= size) {
-        throw out_of_range("get(): Out of range");
+        throw out_of_range("ArrayList::get(): Out of range");
     }
 
     return data[index];
@@ -119,7 +119,7 @@ void ArrayList<T>::clear() {
     --COUNT_DELETE;
     data = new T[capacity];
     ++COUNT_DELETE;
-    capacity = 12;
+    capacity = 13;
     size = 0;
 }
 
@@ -135,7 +135,7 @@ void ArrayList<T>::reverse() {
 template<typename T>
 void ArrayList<T>::print() const {
     if (size == 0) {
-        cout << MAGENTA << "print(): Empty" << RESET << endl;
+        cout << MAGENTA << "ArrayList::print(): Empty" << RESET << endl;
         return;
     }
 
@@ -148,19 +148,20 @@ void ArrayList<T>::print() const {
 
 template<typename T>
 void ArrayList<T>::info() const {
-    std::cout << YELLOW << "Cap : " << capacity << RESET << std::endl;
-    std::cout << YELLOW << "Size: " << size     << RESET << std::endl;
-    std::cout << YELLOW << "Data: ";
+    std::cout << YELLOW << "ArrayList::Cap : " << capacity << RESET << std::endl;
+    std::cout << YELLOW << "ArrayList::Size: " << size     << RESET << std::endl;
+    std::cout << YELLOW << "ArrayList::Data: ";
     print();
     std::cout << RESET << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Image::Image() : ArrayList::ArrayList<int>(28 * 28 - 1), label(-1) {};
 
-Image::Image(Image const& other) : ArrayList::ArrayList<int>(other), label(other.label) {};
+Image::Image() : ArrayList<int>(28 * 28 - 1), label(-1) {};
 
-Image& Image::operator=(Image const& other) {
+Image::Image(const Image& other) : ArrayList<int>(other), label(other.label) {};
+
+Image& Image::operator=(const Image& other) {
     if (this != &other) {
         ArrayList<int>::operator=(other);
         cout << data << endl;
@@ -179,7 +180,7 @@ Image& Image::operator=(Image const& other) {
 
 void Image::setLabel(int _label) {
     if (_label < 0 || _label > 9) {
-        throw invalid_argument("setLabel(): Invalid label, got " + to_string(_label));
+        throw invalid_argument("Image::setLabel(): Invalid label, got " + to_string(_label));
     }
     this->label = _label;
 }
@@ -188,6 +189,13 @@ void Image::load(const int* pixels, int number_of_pixels) {
     setLabel(pixels[0]);
     for (int i = 1; i < number_of_pixels + 1; ++i) {
         ArrayList<int>::push_back(pixels[i]);
+    }
+}
+
+void Image::load(const string& token, int number_of_pixels) {
+    setLabel(stoi(token));
+    for (int i = 1; i < number_of_pixels + 1; ++i) {
+        ArrayList<int>::push_back(stoi(token));
     }
 }
 
@@ -208,7 +216,7 @@ char get_char(int pixel, bool grey = true) {
 }
 
 void Image::print() const {
-    cout << YELLOW << "Label: " << label << RESET << endl;
+    cout << YELLOW << "Image::Label: " << label << RESET << endl;
     for (int i = 0; i < size; ++i) {
         cout << get_char(get(i)) << " ";
         if ((i + 1) % 28 == 0) { cout << endl; }
@@ -216,13 +224,65 @@ void Image::print() const {
     cout << endl;
 }
 
-
-
-
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template
 class ArrayList<int>;
 
 template
 class ArrayList<ArrayList<int>*>;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Dataset::Dataset() {
+    cout << MAGENTA << "Dataset constructor" << RESET << endl;
+    data = new ArrayList<List<int>*>();
+    ++COUNT_DELETE;
+}
+
+Dataset::~Dataset() {
+    cout << MAGENTA << "Dataset destructor" << RESET << endl;
+    delete data;
+    --COUNT_DELETE;
+}
+
+//Dataset::Dataset(const Dataset& other) {
+//    cout << MAGENTA << "Dataset copy constructor" << RESET << endl;
+//
+//    ++COUNT_DELETE;
+//}
+
+bool Dataset::loadFromCSV(const char* fileName) {
+    ifstream file(fileName);
+    if (!file.is_open()) {
+        cout << RED << "Error: " << RESET << "Cannot open file " << fileName << endl;
+        throw runtime_error("Cannot open file");
+    }
+
+    string line;
+    getline(file, line);
+
+
+    while (getline(file, line)) { // load each row in dataset
+        istringstream ss(line);
+        string token;
+        auto* row = new Image();
+
+        int count = 0;
+        data->push_back(new Image());
+
+        while (getline(ss, token, ',')) { // each character in row
+            (*data).
+        }
+        data->push_back(row);
+    }
+
+
+    file.close();
+    return true;
+}
+
+
+
+
+

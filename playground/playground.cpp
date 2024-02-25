@@ -3,60 +3,13 @@
 //
 
 #include "playground.h"
-
-template<typename T>
-class List {
-    T* data;
-    int size;
-
-public:
-    List(T* data, int size) {
-        this->data = data;
-        this->size = size;
-    }
-
-    T* begin() {
-        return data;
-    }
-
-    T* end() {
-        return data + size;
-    }
-
-    const T* begin() const {
-        return data;
-    }
-
-    const T* end() const {
-        return data + size;
-    }
-
-};
-
-void testList() {
-    int data[] = {1, 2, 3, 4, 5};
-
-    List<int> list_0(data, 5);
-
-    for (auto it = list_0.begin(); it != list_0.end(); ++it) {
-        cout << *it << " ";
-    }
-
-    cout << "---" << endl;
-
-    for (int& i : list_0) {
-        cout << i << " ";
-    }
-}
+#include <cassert>
+#define assertm(exp, msg) assert(((void)msg, exp))
 
 int main() {
     cout << GREEN << "START" << RESET << endl;
 
-    bool a = false;
-    int b = a ? 1 : 0;
-
-    cout << b << endl;
-
+    assertm((2 + 2) % 3 == 0, "Success");
 
     cout << GREEN << "END" << RESET << endl;
     return 0;

@@ -8,34 +8,25 @@ template<typename T>
 class List {
 public:
     virtual ~List() = default;
+
     virtual void push_back(T value) = 0;
+
     virtual void push_front(T value) = 0;
+
     virtual void insert(int index, T value) = 0;
+
     virtual void remove(int index) = 0;
+
     virtual T& get(int index) const = 0;
-    virtual int length() const = 0 ;
+
+    virtual int length() const = 0;
+
     virtual void clear() = 0;
+
     virtual void print() const = 0;
+
     virtual void reverse() = 0;
 };
-
-//class Dataset {
-//private:
-//    List<List<int>*>* data;
-//    //You may need to define more
-//public:
-//    Dataset();
-//    ~Dataset();
-//    Dataset(const Dataset& other);
-//    Dataset& operator=(const Dataset& other);
-//    bool loadFromCSV(const char* fileName);
-//    void printHead(int nRows = 5, int nCols = 5) const;
-//    void printTail(int nRows = 5, int nCols = 5) const;
-//    void getShape(int& nRows, int& nCols) const;
-//    void columns() const;
-//    bool drop(int axis = 0, int index = 0, std::string columns = "");
-//    Dataset extract(int startRow = 0, int endRow = -1, int startCol = 0, int endCol = -1) const;
-//};
 
 //class kNN {
 //private:
@@ -60,24 +51,33 @@ protected:
     int capacity;
     int size;
 
-public:
     void resize();
+
+public:
     ArrayList();
+
     explicit ArrayList(int capacity);
-    ArrayList(ArrayList const& other);
-    ArrayList& operator=(ArrayList const& other);
+
+    ArrayList(const ArrayList& other);
+
+    ArrayList& operator=(const ArrayList& other);
+
     ~ArrayList() override;
 
     int length() const override;
 
     void remove(int index) override;
+
     T pop();
 
     void push_back(T value) override;
+
     void push_front(T value) override;
+
     void insert(int index, T value) override;
 
     T& get(int index) const override;
+
     virtual T& operator[](int index) const;
 
     T* begin() {
@@ -97,33 +97,39 @@ public:
     }
 
     void clear() override;
+
     void reverse() override;
 
     void print() const override;
+
     void info() const;
 };
-
 
 
 class Image : public ArrayList<int> {
 private:
     int label;
 
+    void setLabel(int label);
+
 public:
     Image();
-    Image(Image const& other);
-    Image& operator=(Image const& other);
 
-    [[maybe_unused]] int getLabel() const;
-    [[maybe_unused]] void setLabel(int label);
+    Image(const Image& other);
 
-    [[maybe_unused]] void load(const int* pixels, int n = 28 * 28);
+    Image& operator=(const Image& other);
+
+    int getLabel() const;
+
+    void load(const int* pixels, int number_of_pixels = 28 * 28);
+
+    void load(const string& token, int number_of_pixels = 28 * 28);
 
     int& operator[](int index) const final;
 
     void print() const final;
 
-    friend double distance(const Image& a, const Image& b) {
+    static double distance(const Image& a, const Image& b) {
         int sum = 0;
         for (int i = 0; i < a.size; ++i) {
             int temp = a[i] - b[i];
@@ -131,4 +137,34 @@ public:
         }
         return sqrt((double) sum);
     }
+};
+
+
+
+class Dataset {
+private:
+    ArrayList<List<int>*>* data;
+
+public:
+    Dataset();
+
+    ~Dataset();
+
+//    Dataset(const Dataset& other);
+
+//    Dataset& operator=(const Dataset& other);
+
+    bool loadFromCSV(const char* fileName);
+
+//    void printHead(int nRows = 5, int nCols = 5) const;
+
+//    void printTail(int nRows = 5, int nCols = 5) const;
+
+//    void getShape(int& nRows, int& nCols) const;
+
+//    void columns() const;
+
+//    bool drop(int axis = 0, int index = 0, std::string columns = "");
+
+//    Dataset extract(int startRow = 0, int endRow = -1, int startCol = 0, int endCol = -1) const;
 };

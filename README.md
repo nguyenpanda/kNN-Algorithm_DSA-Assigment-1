@@ -35,6 +35,6 @@
 - `Empty` from `ArrayList->print()`
 -
 ### <span style="color:skyblue">Other note:</span>
-- Remember to remove `COUNT_DELETE` from `LinkedList->print()`
-- Remember to set `ArrayList->resize` into `private`
+- Remember to remove `COUNT_DELETE` from `->print()`
+- Remember to set `ArrayList->resize` into `private` -> CHECK
 - Remember to set `Image->setLabel` into `private`
