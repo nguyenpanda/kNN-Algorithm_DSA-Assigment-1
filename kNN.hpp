@@ -160,7 +160,7 @@ public:
 
     void printHead(int nRows = 5, int nCols = 5) const;
 
-//    void printTail(int nRows = 5, int nCols = 5) const;
+    void printTail(int nRows = 5, int nCols = 5) const;
 
 //    void getShape(int& nRows, int& nCols) const;
 

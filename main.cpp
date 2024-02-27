@@ -647,7 +647,7 @@ void tc1() {
 //dataset.loadFromCSV("/Users/hatuongnguyen/Desktop/DSA Assignment/dataset/mnist_train_small.csv"); // 20K
 //    dataset.loadFromCSV("/Users/hatuongnguyen/Desktop/DSA Assignment/dataset/mnist_train.csv"); // 60K
 
-//    dataset.printHead();
+    dataset.printHead();
 //    dataset.printTail();
 //    int nRows, nCols;
 //    dataset.getShape(nRows, nCols);
