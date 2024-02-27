@@ -17,6 +17,15 @@ public:
     virtual void clear() = 0;
     virtual void print() const = 0;
     virtual void reverse() = 0;
+
+    // MY OWN DEFINE METHOD (NOT FROM THE ORIGINAL CODE)
+    virtual void NEW_METHOD_1() = 0;
+    virtual void NEW_METHOD_2() = 0;
+    virtual void NEW_METHOD_BLA_BLA_BLA() = 0;
+    T operator???() = 0;
+    T operator???() = 0;
+    T operator???() = 0;
+    T operator???() = 0;
 };
 
 class Dataset {

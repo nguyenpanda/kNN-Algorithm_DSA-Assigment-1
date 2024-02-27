@@ -31,6 +31,12 @@ public:
     virtual void print() const = 0;
 
     virtual void reverse() = 0;
+
+    virtual T& operator[](int index) const = 0;
+
+    virtual T* begin() const = 0;
+
+    virtual T* end() const = 0;
 };
 
 //class kNN {
@@ -83,21 +89,13 @@ public:
 
     T& get(int index) const override;
 
-    virtual T& operator[](int index) const;
+    T& operator[](int index) const override;
 
-    T* begin() {
+    T* begin() const override{
         return data;
     }
 
-    T* end() {
-        return data + size;
-    }
-
-    const T* begin() const {
-        return data;
-    }
-
-    const T* end() const {
+    T* end() const override {
         return data + size;
     }
 
@@ -160,7 +158,7 @@ public:
 
     bool loadFromCSV(const char* fileName);
 
-//    void printHead(int nRows = 5, int nCols = 5) const;
+    void printHead(int nRows = 5, int nCols = 5) const;
 
 //    void printTail(int nRows = 5, int nCols = 5) const;
 
