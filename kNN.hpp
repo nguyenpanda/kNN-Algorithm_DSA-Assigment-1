@@ -146,6 +146,9 @@ public:
 class Dataset {
 private:
     ArrayList<Image*>* data;
+    int numRows;
+    int numCols;
+    string featureLabel;
 
 public:
     Dataset();
