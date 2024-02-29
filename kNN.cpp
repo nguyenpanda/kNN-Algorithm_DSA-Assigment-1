@@ -1,7 +1,7 @@
 #include "kNN.hpp"
 
 template<typename T>
-void ArrayList<T>::resize() {
+void ArrayList<T>::_resize() {
 //    cout << MAGENTA << "Resizing" << RESET <<  " from [" << YELLOW << capacity << RESET << "]->[" << YELLOW << capacity*2 << RESET << "]" << endl;
     int new_capacity = capacity * 2;
     capacity = new_capacity;
@@ -60,7 +60,7 @@ ArrayList<T>::~ArrayList() {
 
 template<typename T>
 void ArrayList<T>::push_back(T value) {
-    if (size == capacity) { resize(); }
+    if (size == capacity) { _resize(); }
     data[size++] = value;
 }
 
@@ -72,7 +72,7 @@ void ArrayList<T>::push_front(T value) {
 template<typename T>
 void ArrayList<T>::insert(int index, T value) {
     if (index < 0 || index > size) { return; }
-    if (size == capacity) { resize(); }
+    if (size == capacity) { _resize(); }
 
     memmove(data + index + 1, data + index, sizeof(T&) * (size - index));
     data[index] = value;
@@ -89,6 +89,10 @@ void ArrayList<T>::remove(int index) {
 
 template<typename T>
 T ArrayList<T>::pop() {
+    if (size == 0) {
+        throw out_of_range("ArrayList::pop(): Empty");
+    }
+
     T value = data[size - 1];
     remove(size - 1);
     return value;
@@ -135,15 +139,17 @@ void ArrayList<T>::reverse() {
 template<typename T>
 void ArrayList<T>::print() const {
     if (size == 0) {
-        cout << MAGENTA << "ArrayList::print(): Empty" << RESET << endl;
+        cout << MAGENTA << "- ArrayList::print(): Empty" << RESET << endl;
+        cout << "-----" <<  endl;
         return;
     }
-//    cout << RED << "test" << RESET << endl;
+
     cout << data[0];
     for (int i = 1; i < size; i++) {
         cout << " " << data[i];
     }
     cout << endl;
+    cout << "--" <<  endl;
 }
 
 template<typename T>
@@ -151,7 +157,8 @@ void ArrayList<T>::info() const {
     std::cout << YELLOW << "ArrayList::Cap : " << capacity << RESET << std::endl;
     std::cout << YELLOW << "ArrayList::Size: " << size     << RESET << std::endl;
     std::cout << YELLOW << "ArrayList::Data: ";
-    for (int i = 0; i < size; i++) {
+    cout << data[0];
+    for (int i = 1; i < size; i++) {
         cout << ' ' << data[i];
     }
     cout << RESET << endl;
@@ -165,44 +172,43 @@ void ArrayList<T>::info() const {
 //
 //}
 
-Image::Image() : ArrayList<int>(28 * 28), label(-1) {};
+Image::Image() : ArrayList<int>(TrainingSettings::IMAGE_SIZE + 1) {};
 
-Image::Image(const Image& other) : ArrayList<int>(other), label(other.label) {}; // NOLINT(*-use-equals-default)
+Image::Image(const Image& other) : ArrayList<int>(other) {}; // NOLINT(*-use-equals-default)
 
-Image::Image(int* pixels, int label, int number_of_pixels) : ArrayList<int>(number_of_pixels), label(label) {
+Image::Image(int* pixels, int number_of_pixels) : ArrayList<int>(number_of_pixels) {
     load(pixels, number_of_pixels);
 }
 
-Image::Image(int capacity) : ArrayList<int>(capacity), label(-1) {};
+Image::Image(int capacity) : ArrayList<int>(++capacity) {};
 
+// TEST
 Image& Image::operator=(const Image& other) {
     if (this != &other) {
         ArrayList<int>::operator=(other);
         cout << data << endl;
         cout << capacity << endl;
         cout << size << endl;
-        cout << label << endl;
-
-        label = other.label;
     }
     return *this;
 }
 
 [[maybe_unused]] int Image::getLabel() const {
-    return this->label;
+//    cout << RED << "Image::getLabel(): " << data[0] << RESET << endl;
+    return this->data[0];
 }
 
-void Image::setLabel(int _label) {
-    if (_label < 0 || _label > 9) {
-        throw invalid_argument("Image::setLabel(): Invalid label, got " + to_string(_label));
+void Image::_setLabel(int label) {
+    if (label < 0 || label > 9) {
+        throw invalid_argument("Image::setLabel(): Invalid label, got " + to_string(label));
     }
-    this->label = _label;
+    this->push_front(label);
 }
 
 void Image::load(const int* pixels, int number_of_pixels) {
-    setLabel(pixels[0]);
+    _setLabel(pixels[0]);
     for (int i = 1; i < number_of_pixels + 1; ++i) {
-        ArrayList<int>::push_back(pixels[i]);
+        this->push_back(pixels[i]);
     }
 }
 
@@ -210,7 +216,7 @@ void Image::load(istringstream& iss, int number_of_pixels) {
     string token;
     getline(iss, token, ',');
 
-    setLabel(stoi(token));
+    _setLabel(stoi(token));
 
     for (int i = 1; i < number_of_pixels + 1; ++i) {
         getline(iss, token, ',');
@@ -237,22 +243,24 @@ char get_char(int pixel, bool grey = true, bool highQuality = true) {
 }
 
 void Image::print() const {
-    cout << YELLOW << "Image::Label: " << label << RESET << endl;
-    for (int i = 0; i < size; ++i) {
+    for (int i = 1; i < size; ++i) {
         cout << get_char(get(i)) << ' ';
-        if ((i + 1) % (int) sqrt(size) == 0) { cout << endl; }
+        if ((i) % TrainingSettings::IMAGE_WIDTH == 0) { cout << endl; }
     }
-
     cout << endl;
 }
 
-double Image::distance(const Image& a, const Image& b) {
+int Image::_distance(const Image& a, const Image& b) {
     int sum = 0;
     for (int i = 0; i < a.size; ++i) {
         int temp = a[i] - b[i];
         sum += temp * temp;
     }
-    return sqrt((double) sum);
+    return sum;
+}
+
+double Image::distance(const Image& a, const Image& b) {
+    return sqrt(_distance(a, b));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -324,6 +332,7 @@ bool Dataset::loadFromCSV(const char* fileName) {
 
         auto* row = new Image(784);
         row->load(iss);
+        row->info();
         data->push_back(row);
     }
 
@@ -353,12 +362,22 @@ void Dataset::printHead(int nRows, int nCols) const {
     for (int i = 0; i < nRows; ++i) {
         Image* current = (*data)[i];
         cout << current->getLabel();
-        for (int j = 0; j < nCols - 1; ++j) {
+        for (int j = 1; j < nCols; ++j) {
             cout << ' ' << (*current)[j];
         }
         cout << '\n';
     }
 }
+
+/*
+Dataset::printHead(5, 5)
+label 1x1 1x2 1x4 1x5
+5 1 2 0 0
+0 2 1 0 0
+4 0 0 0 0
+1 0 0 1 0
+9 0 0 0 1
+ */
 
 void Dataset::printTail(int nRows, int nCols) const {
     if (nRows < 0 || nCols < 0) {
