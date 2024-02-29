@@ -6,7 +6,9 @@
 
 class TrainingSettings {
 public:
-    static const int IMAGE_SIZE = 784;
+    static const int IMAGE_WIDTH = 28;
+    static const int IMAGE_HEIGHT = 28;
+    static const int IMAGE_SIZE = IMAGE_WIDTH * IMAGE_HEIGHT;
 };
 
 template<typename T>
@@ -62,8 +64,7 @@ protected:
     int capacity;
     int size;
 
-    void resize();
-
+    void _resize();
 public:
     ArrayList();
 
@@ -111,15 +112,14 @@ public:
 
 class Image : public ArrayList<int> {
 private:
-    int label;
-    void setLabel(int label);
-
+    void _setLabel(int label);
+    static int _distance(const Image& a, const Image& b);
 public:
     Image();
 
     Image(const Image& other);
 
-    explicit Image(int* pixels, int label = 0, int number_of_pixels = TrainingSettings::IMAGE_SIZE);
+    explicit Image(int* pixels, int number_of_pixels = TrainingSettings::IMAGE_SIZE);
 
     explicit Image(int capacity);
 
