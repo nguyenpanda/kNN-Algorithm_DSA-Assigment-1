@@ -773,26 +773,28 @@ void executeTime(void (* func)()) {
 
 void tc1() {
     Dataset dataset;
+//    dataset.loadFromCSV("/Users/hatuongnguyen/Desktop/DSA Assignment/dataset/test.csv"); // 2
+    dataset.loadFromCSV("/Users/hatuongnguyen/Desktop/DSA Assignment/dataset/199_test.csv"); // 2
 //    dataset.loadFromCSV("/Users/hatuongnguyen/Desktop/DSA Assignment/dataset/init_dataset_2.csv"); // 2
-    dataset.loadFromCSV("/Users/hatuongnguyen/Desktop/DSA Assignment/dataset/init_dataset_199.csv"); // 199
+//    dataset.loadFromCSV("/Users/hatuongnguyen/Desktop/DSA Assignment/dataset/init_dataset_199.csv"); // 199
 //    dataset.loadFromCSV("/Users/hatuongnguyen/Desktop/DSA Assignment/dataset/mnist_test.csv"); // 10K
 //dataset.loadFromCSV("/Users/hatuongnguyen/Desktop/DSA Assignment/dataset/mnist_train_small.csv"); // 20K
 //    dataset.loadFromCSV("/Users/hatuongnguyen/Desktop/DSA Assignment/dataset/mnist_train.csv"); // 60K
 
-    dataset.printHead();
+    dataset.printHead(5, 784);
     dataset.printTail();
 //    dataset.columns();
     int nRows, nCols;
     dataset.getShape(nRows, nCols);
     cout << "Shape: " << nRows << "x" << nCols << endl;
-
+//
     bool boolDrop = dataset.drop(1, 0, "1x4");
     cout << "Drop: " << boolDrop << endl;
 
-    dataset.printHead();
-    dataset.printTail(5, 5);
-    dataset.getShape(nRows, nCols);
-    cout << "Shape: " << nRows << "x" << nCols << endl;
+    dataset.printHead(5, 784);
+    dataset.printTail();
+//    dataset.getShape(nRows, nCols);
+//    cout << "Shape: " << nRows << "x" << nCols << endl;
 
 //    kNN knn;
 //    Dataset X_train, X_test, y_train, y_test;

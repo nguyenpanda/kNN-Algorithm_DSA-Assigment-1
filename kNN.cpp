@@ -286,7 +286,7 @@ Dataset::Dataset() {
     cout << MAGENTA << "Dataset constructor" << RESET << endl;
     data = new ArrayList<Image*>();
     ++COUNT_DELETE;
-    featureLabel = new ArrayList<string>(784);
+    featureLabel = new ArrayList<string>(785);
     ++COUNT_DELETE;
 }
 
@@ -305,12 +305,28 @@ Dataset::~Dataset() {
 //    ++COUNT_DELETE;
 //}
 
+//    if (!iss && token.empty())
+//    {
+//        featureLabel->push_back("");
+//    }
+//    featureLabel->remove(featureLabel->length() - 1);
+//    featureLabel->push_back("28x28");
+
 void Dataset::loadLabel(istringstream& iss) {
     cout << MAGENTA << "Dataset::loadLabel()" << RESET << endl;
     string token;
+
     while(getline(iss,token,',')){
         featureLabel->push_back(token);
+        cout << "The last token: " << token.back() << endl;
     }
+
+    cout << RED << "For loop in loadLabel()" << RESET << endl;
+    for (int i = 0; i < featureLabel->length(); ++i) {
+        cout << (*featureLabel)[i] << " ";
+    }
+    cout << endl;
+    featureLabel->info();
 }
 
 bool Dataset::loadFromCSV(const char* fileName) {
@@ -326,13 +342,13 @@ bool Dataset::loadFromCSV(const char* fileName) {
     istringstream labelstream(line);        // Load label
     loadLabel(labelstream);
 
-    while (getline(file, line)) { // load each row in dataset
+    while (getline(file, line, '\n')) { // load each row in dataset
         istringstream iss(line);
         string token;
 
         auto* row = new Image(784);
         row->load(iss);
-        row->info();
+//        row->info();
         data->push_back(row);
     }
 
@@ -349,8 +365,10 @@ void Dataset::printHead(int nRows, int nCols) const {
         cout << YELLOW << "Dataset::printHead(" << nRows << ", " << nCols << ")" << RESET << endl;
         return;
     }
-    if (nRows > data->length()) { nRows = data->length(); }
-    if (nCols > featureLabel->length()) { nCols = featureLabel->length(); }
+
+    nRows = min(nRows, data->length());
+    nCols = min(nCols, featureLabel->length());
+
     cout << MAGENTA << "Dataset::printHead(" << nRows << ", " << nCols << ")" << RESET << endl;
 
     cout << (*featureLabel)[0];
@@ -384,8 +402,8 @@ void Dataset::printTail(int nRows, int nCols) const {
         cout << YELLOW << "Dataset::printTail(" << nRows << ", " << nCols << ")" << RESET << endl;
         return;
     }
-    if (nRows > data->length()) { nRows = data->length(); }
-    if (nCols >= featureLabel->length()) { nCols = featureLabel->length(); }
+    nRows = min(nRows, data->length());
+    nCols = min(nCols, featureLabel->length());
 
     cout << MAGENTA << "Dataset::printTail(" << nRows << ", " << nCols << ")" << RESET << endl;
 
